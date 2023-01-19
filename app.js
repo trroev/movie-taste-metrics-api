@@ -5,6 +5,8 @@ const passport = require("passport");
 const cors = require("cors");
 
 // import routes
+const indexRouter = require("./routes/index");
+const apiRouter = require("./routes/api");
 
 const app = express();
 
@@ -17,6 +19,8 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // set up routes
+app.use("/", indexRouter);
+app.use("/", apiRouter);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Movie Taste Metrics App");
