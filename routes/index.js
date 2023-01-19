@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/", function (req, res, next) {
-  res.redirect("/api");
+router.get("/", (req, res, next) => {
+  res.send("Welcome to the Movie Taste Metrics App");
 });
 
 module.exports = router;

@@ -3,7 +3,7 @@ const passport = require("passport");
 module.exports = (passport) => {
   const JwtStrategy = require("passport-jwt").Strategy;
   const ExtractJwt = require("passport-jwt").ExtractJwt;
-  const Admin = require("../models/admin");
+  const User = require("../models/user");
 
   const secret = process.env.SECRET_KEY;
   const jwtOptions = {
@@ -12,11 +12,11 @@ module.exports = (passport) => {
   };
 
   const strategy = new JwtStrategy(jwtOptions, (payload, done) => {
-    // verify the payload and call the done callback with the admin object
-    Admin.findById(payload.adminId, (err, admin) => {
+    // verify the payload and call the done callback with the user object
+    User.findById(payload.userId, (err, user) => {
       if (err) return done(err);
-      if (!admin) return done(null, false);
-      done(null, admin);
+      if (!user) return done(null, false);
+      done(null, user);
     });
   });
 

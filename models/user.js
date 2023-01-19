@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const { DateTime } = require("luxon");
+const bcrypt = require("bcryptjs");
+const SALT_ROUNDS = 10;
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -24,6 +26,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
   favoriteFilms: [
     {
       type: String,
@@ -45,6 +51,23 @@ const UserSchema = new mongoose.Schema({
     },
   ],
 });
+
+// hash plain text password before save
+UserSchema.pre("save", async function (next) {
+  const user = this;
+  if (user.isModified("password")) {
+    const salt = await bcrypt.genSaltSync(SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(user.password, salt);
+    user.password = hashedPassword;
+  }
+  next();
+});
+
+// compare hashed password
+UserSchema.methods.isValidPassword = function (password) {
+  const user = this;
+  return bcrypt.compareSync(password, user.password);
+};
 
 UserSchema.virtual("post_date_formatted").get(function () {
   return DateTime.fromJSDate(this.createdAt).toLocaleString(

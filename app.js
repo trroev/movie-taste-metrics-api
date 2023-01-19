@@ -22,10 +22,6 @@ require("./config/passport")(passport);
 app.use("/", indexRouter);
 app.use("/", apiRouter);
 
-app.get("/", (req, res) => {
-  res.send("Welcome to the Movie Taste Metrics App");
-});
-
 const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

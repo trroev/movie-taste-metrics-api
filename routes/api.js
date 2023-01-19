@@ -2,14 +2,14 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
-const admin_controller = require("../controllers/adminController");
+const user_controller = require("../controllers/userController");
 
-/// ADMIN ROUTES ///
+/// USER ROUTES ///
 
-// POST request to login an admin
-router.post("/admin/login", admin_controller.login);
+// POST request to login a user
+router.post("/user/login", user_controller.login);
 
-// GET request to logout an admin
-router.get("/admin/logout", admin_controller.logout);
+// GET request to logout a user
+router.get("/user/logout", user_controller.logout);
 
 module.exports = router;
