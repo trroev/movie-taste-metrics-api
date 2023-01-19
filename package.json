@@ -1,0 +1,14 @@
+{
+  "name": "movie-taste-metrics",
+  "version": "1.0.0",
+  "description": "movie recommendation app",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Trevor Mathiak <tmathiak@gmail.com> (https://www.trevormathiak.dev/)",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
