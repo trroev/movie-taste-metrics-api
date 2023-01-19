@@ -1,6 +1,54 @@
 const User = require("../models/user");
 const Blacklist = require("../models/blacklist");
 const jwt = require("jsonwebtoken");
+const { check, validationResult } = require("express-validator");
+
+// create a user and save it to the database
+exports.create_user = [
+  // validate and sanitize fields
+  check("username", "username is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  check("email", "email address is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  check("password", "password is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  // process request after validation and sanitization
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      // extract the user data from the request body
+      const { username, email, password } = req.body;
+      // check if the username/email already exists
+      const existingUser = await User.findOne({
+        $or: [{ username }, { email }],
+      });
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ error: "This username or email already exists" });
+      }
+      // create a new User object with the escaped and trimmed data
+      const user = new User({ username, email, password });
+
+      // save the User to the database
+      user.save();
+      // successful - return the created user to the client
+      res.status(200).json(user);
+    } catch (err) {
+      return next(err);
+    }
+  },
+];
 
 exports.login = async (req, res, next) => {
   // extract the username and password from the request body

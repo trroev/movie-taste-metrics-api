@@ -6,6 +6,9 @@ const user_controller = require("../controllers/userController");
 
 /// USER ROUTES ///
 
+// POST request to create a new user
+router.post("/user/signup", user_controller.create_user);
+
 // POST request to login a user
 router.post("/user/login", user_controller.login);
 
