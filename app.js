@@ -1,8 +1,22 @@
 require("dotenv").config();
 require("./config/db")();
 const express = require("express");
+const passport = require("passport");
+const cors = require("cors");
+
+// import routes
 
 const app = express();
+
+// set up middleware
+app.use(cors());
+app.use(express.json());
+
+// initialize passport and use it in the app
+app.use(passport.initialize());
+require("./config/passport")(passport);
+
+// set up routes
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Movie Taste Metrics App");
