@@ -4,11 +4,18 @@
   "description": "movie recommendation app",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon app.js",
     "test": "jest"
   },
   "author": "Trevor Mathiak <tmathiak@gmail.com> (https://www.trevormathiak.dev/)",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongodb": "^4.13.0",
+    "mongoose": "^6.8.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.32.0"
   }
 }
