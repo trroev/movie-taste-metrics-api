@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+const { DateTime } = require("luxon");
 
-const UserSchema = new Schema({
+const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -15,6 +15,14 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
   },
   favoriteFilms: [
     {
@@ -36,6 +44,12 @@ const UserSchema = new Schema({
       type: String,
     },
   ],
+});
+
+UserSchema.virtual("post_date_formatted").get(function () {
+  return DateTime.fromJSDate(this.createdAt).toLocaleString(
+    DateTime.DATETIME_MED
+  );
 });
 
 module.exports = mongoose.model("User", UserSchema);
