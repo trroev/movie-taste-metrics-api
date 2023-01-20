@@ -87,11 +87,84 @@ exports.get_all_users = async (req, res, next) => {
   }
 };
 
-// update_user
-exports.update_user = async (req, res, next) => {};
+// update a specific user by ID
+exports.update_user = [
+  // validate and sanitize fields
+  check("username", "username is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  check("email", "email address is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  // process request after validation and sanitization
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      // check if the username/email already exists
+      const existingUser = await User.findOne({
+        $or: [
+          { username: req.body.username },
+          { email: req.body.email },
+        ],
+      });
+
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({ error: "This username or email already exists" });
+      }
+
+      const user = await User.findOneAndUpdate(
+        {
+          _id: req.params.id,
+        },
+        {
+          $set: {
+            ...req.body,
+            updatedAt: Date.now(),
+          },
+        },
+        {
+          new: true,
+          runValidators: true,
+        }
+      ).select("-password");
+      if (!user) {
+        return res
+          .status(404)
+          .json({ err: `user with id ${req.params.id} not found` });
+      }
+      // successful - return JSON object of the updated user
+      res.status(200).json(user);
+    } catch (err) {
+      return next(err);
+    }
+  },
+];
 
 // delete_user
-exports.delete_user = async (req, res, next) => {};
+exports.delete_user = async (req, res, next) => {
+  // check if user owns account or is admin
+  if (req.user.id !== req.params.id && !req.user.isAdmin) {
+    return res.status(401).json({ err: "Unauthorized" });
+  }
+  try {
+    const user = await User.findByIdAndRemove(req.params.id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ err: `user with id ${req.params.id} not found` });
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
 
 // change_password
 exports.change_password = async (req, res, next) => {};

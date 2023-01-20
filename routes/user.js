@@ -15,6 +15,20 @@ router.get("/user/:id", user_controller.get_user);
 // GET request to find all users
 router.get("/users", user_controller.get_all_users);
 
+// PUT request to update a specific user by id
+router.put(
+  "/user/:id",
+  passport.authenticate("jwt", { session: false }),
+  user_controller.update_user
+);
+
+// POST request to delete a specific user by id
+router.post(
+  "/user/:id",
+  passport.authenticate("jwt", { session: false }),
+  user_controller.delete_user
+);
+
 // POST request to login a user
 router.post("/user/login", user_controller.login);
 
