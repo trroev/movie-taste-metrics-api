@@ -52,6 +52,38 @@ exports.create_user = [
   },
 ];
 
+// retrieve a specific user by ID
+exports.get_user = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select("-password")
+      .exec();
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ err: `user with id ${req.params.id} no found` });
+    }
+    // successful, return JSON object of specific user
+    res.status(200).json(user);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+// get_all_users
+exports.get_all_users = async (req, res, next) => {};
+
+// update_user
+exports.update_user = async (req, res, next) => {};
+
+// delete_user
+exports.delete_user = async (req, res, next) => {};
+
+// change_password
+exports.change_password = async (req, res, next) => {};
+
+// login
 exports.login = async (req, res, next) => {
   // extract the username and password from the request body
   const { username, password } = req.body;
@@ -76,6 +108,7 @@ exports.login = async (req, res, next) => {
   res.status(200).json({ msg: "Login successful", token });
 };
 
+// logout
 exports.logout = (req, res, next) => {
   try {
     // get the jwt from the headers

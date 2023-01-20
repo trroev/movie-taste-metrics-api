@@ -9,6 +9,9 @@ const user_controller = require("../controllers/userController");
 // POST request to create a new user
 router.post("/user/signup", user_controller.create_user);
 
+// GET request to find a specific user by id
+router.get("/user/:id", user_controller.get_user);
+
 // POST request to login a user
 router.post("/user/login", user_controller.login);
 
