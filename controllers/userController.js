@@ -32,6 +32,7 @@ exports.create_user = [
       const existingUser = await User.findOne({
         $or: [{ username }, { email }],
       });
+
       if (existingUser) {
         return res
           .status(400)
@@ -71,8 +72,20 @@ exports.get_user = async (req, res, next) => {
   }
 };
 
-// get_all_users
-exports.get_all_users = async (req, res, next) => {};
+// retrieve all users
+exports.get_all_users = async (req, res, next) => {
+  try {
+    const list_users = await User.find()
+      .sort([["createdAt", "descending"]])
+      .select("-password")
+      .exec();
+
+    // successful - return JSON object of all users
+    res.status(200).json(list_users);
+  } catch (err) {
+    return next(err);
+  }
+};
 
 // update_user
 exports.update_user = async (req, res, next) => {};

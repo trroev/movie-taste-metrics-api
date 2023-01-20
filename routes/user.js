@@ -12,6 +12,9 @@ router.post("/user/signup", user_controller.create_user);
 // GET request to find a specific user by id
 router.get("/user/:id", user_controller.get_user);
 
+// GET request to find all users
+router.get("/users", user_controller.get_all_users);
+
 // POST request to login a user
 router.post("/user/login", user_controller.login);
 
