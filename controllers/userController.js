@@ -43,7 +43,9 @@ exports.create_user = [
       // save the User to the database
       user.save();
       // successful - return the created user to the client
-      res.status(200).json(user);
+      res
+        .status(200)
+        .json({ msg: `${user.username} successfully created` });
     } catch (err) {
       return next(err);
     }

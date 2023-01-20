@@ -6,7 +6,7 @@ const cors = require("cors");
 
 // import routes
 const indexRouter = require("./routes/index");
-const apiRouter = require("./routes/api");
+const userRouter = require("./routes/user");
 
 const app = express();
 
@@ -20,7 +20,7 @@ require("./config/passport")(passport);
 
 // set up routes
 app.use("/", indexRouter);
-app.use("/", apiRouter);
+app.use("/", userRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => {
