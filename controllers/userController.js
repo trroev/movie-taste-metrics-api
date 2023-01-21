@@ -167,7 +167,57 @@ exports.delete_user = async (req, res, next) => {
 };
 
 // change_password
-exports.change_password = async (req, res, next) => {};
+exports.update_password = [
+  // validate and sanitize fields
+  check("oldPassword", "Old password is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  check("newPassword", "New password is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  check("confirmPassword", "Confirm password is required")
+    .trim()
+    .notEmpty()
+    .escape(),
+  // process request after validation and sanitization
+  async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      // find user by id
+      const user = await User.findById(req.user.id);
+      if (!user) {
+        return res.status(404).json({ err: "User not found" });
+      }
+
+      // check if the old password is correct
+      if (!user.isValidPassword(req.body.oldPassword)) {
+        return res
+          .status(400)
+          .json({ err: "Incorrect old password" });
+      }
+
+      // check if the new password and confirm password match
+      if (req.body.newPassword !== req.body.confirmPassword) {
+        return res.status(400).json({
+          err: "New password does not match confirm password",
+        });
+      }
+      // update users password
+      user.set({ password: req.body.newPassword });
+      await user.save();
+
+      // successful - return JSON message
+      res.status(200).json({ msg: "Password updated successfully" });
+    } catch (err) {
+      return next(err);
+    }
+  },
+];
 
 // login
 exports.login = async (req, res, next) => {

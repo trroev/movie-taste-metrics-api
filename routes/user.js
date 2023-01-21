@@ -22,6 +22,13 @@ router.put(
   user_controller.update_user
 );
 
+// PUT reques to update a specific users password
+router.put(
+  "/user/:id/update_password",
+  passport.authenticate("jwt", { session: false }),
+  user_controller.update_password
+);
+
 // POST request to delete a specific user by id
 router.post(
   "/user/:id",
@@ -30,9 +37,9 @@ router.post(
 );
 
 // POST request to login a user
-router.post("/user/login", user_controller.login);
+router.post("/login", user_controller.login);
 
 // GET request to logout a user
-router.get("/user/logout", user_controller.logout);
+router.get("/logout", user_controller.logout);
 
 module.exports = router;
