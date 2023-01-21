@@ -247,6 +247,12 @@ exports.login = async (req, res, next) => {
 // logout
 exports.logout = (req, res, next) => {
   try {
+    // check if the authorization header is present
+    if (!req.headers.authorization) {
+      return res
+        .status(401)
+        .json({ err: "Authorization header is missing" });
+    }
     // get the jwt from the headers
     const token = req.headers.authorization.split(" ")[1];
     jwt.verify(token, process.env.SECRET_KEY);
