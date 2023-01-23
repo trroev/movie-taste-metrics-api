@@ -141,7 +141,14 @@ exports.update_user = [
           .json({ err: `user with id ${req.params.id} not found` });
       }
       // successful - return JSON object of the updated user
-      res.status(200).json(user);
+      res
+        .status(200)
+        .json(
+          {
+            msg: `User with id ${req.params.id} updated successfully`,
+          },
+          user
+        );
     } catch (err) {
       return next(err);
     }

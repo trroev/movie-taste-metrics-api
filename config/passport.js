@@ -15,7 +15,10 @@ module.exports = (passport) => {
     // verify the payload and call the done callback with the user object
     User.findById(payload.userId, (err, user) => {
       if (err) return done(err);
-      if (!user) return done(null, false);
+      if (!user._id.equals(payload.userId))
+        return done(null, false, { msg: "Invalid userId" });
+      if (!user)
+        return done(null, false, { msg: "Invalid Credentials" });
       done(null, user);
     });
   });

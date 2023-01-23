@@ -7,6 +7,7 @@ const cors = require("cors");
 // import routes
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
+const tmdbRouter = require("./routes/tmdb");
 
 const app = express();
 
@@ -20,7 +21,8 @@ require("./config/passport")(passport);
 
 // set up routes
 app.use("/", indexRouter);
-app.use("/", userRouter);
+app.use("/user", userRouter);
+app.use("/api/tmdb", tmdbRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => {
