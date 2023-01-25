@@ -1,6 +1,34 @@
 const axios = require("axios");
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
+const handleError = (err, res, next) => {
+  // check for specific error types and respond accordingly
+  if (err.response && err.response.status === 400) {
+    return res.status(400).send("Error: Bad request");
+  }
+  if (err.response && err.response.status === 401) {
+    return res.status(401).send("Error: Unauthorized");
+  }
+  if (err.response & (err.response.status === 403)) {
+    return res
+      .status(403)
+      .send(
+        "Forbidden: you do not have access to the requested resource"
+      );
+  }
+  if (err.response && err.response.status === 404) {
+    return res.status(404).send("Error: Resource not found");
+  }
+  if (err.response && err.response.status === 500) {
+    return res.status(500).send("Error: Internal server error");
+  }
+  if (err.response && err.response.status === 503) {
+    return res.status(503).send("Error: Service unavailable");
+  }
+  // handle any other errors
+  return next(err);
+};
+
 // retrieve a list of popular movies from TMDb
 exports.get_movies = async (req, res, next) => {
   try {
@@ -13,7 +41,7 @@ exports.get_movies = async (req, res, next) => {
     // return the list of movies to the client
     res.status(200).json(movies);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };
 
@@ -28,7 +56,7 @@ exports.get_movie = async (req, res, next) => {
     const movie = response.data;
     res.status(200).json(movie);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };
 
@@ -44,7 +72,7 @@ exports.search_movies = async (req, res, next) => {
     // return the list of movies to the client
     res.status(200).json(movies);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };
 
@@ -58,7 +86,7 @@ exports.get_tv_show = async (req, res, next) => {
     const tvShow = response.data;
     res.status(200).json(tvShow);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };
 
@@ -72,7 +100,7 @@ exports.search_tv_show = async (req, res, next) => {
     const shows = response.data.results;
     res.status(200).json(shows);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };
 
@@ -88,7 +116,7 @@ exports.get_people = async (req, res, next) => {
     // return the list of people to the client
     res.status(200).json(people);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };
 
@@ -104,7 +132,7 @@ exports.search_people = async (req, res, next) => {
     // return the list of people to the client
     res.status(200).json(person);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };
 
@@ -118,6 +146,6 @@ exports.get_genres = async (req, res, next) => {
     const genres = response.data.genres;
     res.status(200).json(genres);
   } catch (err) {
-    return next(err);
+    handleError(err, res, next);
   }
 };

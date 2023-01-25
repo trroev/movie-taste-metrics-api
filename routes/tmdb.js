@@ -3,13 +3,13 @@ const router = express.Router();
 
 const tmdb_controller = require("../controllers/tmdbController");
 
-// retrieve a list of movies
+// GET request to retrieve a list of movies
 router.get("/movies", tmdb_controller.get_movies);
 
-// retrieve a specific movie based on id
+// GET request to retrieve a specific movie based on id
 router.get("/movie/:movieId", tmdb_controller.get_movie);
 
-// search for a movie
+// GET request to search for a movie
 router.get("/movies/search", tmdb_controller.search_movies);
 
 // GET request for a specific tv show based on id
