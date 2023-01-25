@@ -1,5 +1,6 @@
 const axios = require("axios");
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const logger = require("winston");
 
 const handleError = (err, res, next) => {
   // check for specific error types and respond accordingly
@@ -40,7 +41,13 @@ exports.get_movies = async (req, res, next) => {
     const movies = response.data.results;
     // return the list of movies to the client
     res.status(200).json(movies);
+    logger.info(
+      "get_movies - Successfully returned a list of popular movies."
+    );
   } catch (err) {
+    logger.error(
+      "get_movies - Failed to return a list of popular movies."
+    );
     handleError(err, res, next);
   }
 };
@@ -55,7 +62,13 @@ exports.get_movie = async (req, res, next) => {
 
     const movie = response.data;
     res.status(200).json(movie);
+    logger.info(
+      "get_movie - Successfully returned a specific movie using it's ID."
+    );
   } catch (err) {
+    logger.error(
+      "get_movie - Failed to return a specific movie using it's ID."
+    );
     handleError(err, res, next);
   }
 };
@@ -71,7 +84,13 @@ exports.search_movies = async (req, res, next) => {
     const movies = response.data.results;
     // return the list of movies to the client
     res.status(200).json(movies);
+    logger.info(
+      "search_movies - Successfully returned a movie or list of movies using a query."
+    );
   } catch (err) {
+    logger.error(
+      "search_movies - Failed to return a movie or list of movies using a query."
+    );
     handleError(err, res, next);
   }
 };
@@ -85,7 +104,13 @@ exports.get_tv_show = async (req, res, next) => {
     );
     const tvShow = response.data;
     res.status(200).json(tvShow);
+    logger.info(
+      "get_tv_show - Successfully returned a tv show using it's ID."
+    );
   } catch (err) {
+    logger.error(
+      "get_tv_show - Failed to return a tv show using it's ID."
+    );
     handleError(err, res, next);
   }
 };
@@ -99,7 +124,13 @@ exports.search_tv_show = async (req, res, next) => {
     );
     const shows = response.data.results;
     res.status(200).json(shows);
+    logger.info(
+      "search_tv_show - Successfully returned a tv show or list of tv shows using a query."
+    );
   } catch (err) {
+    logger.error(
+      "search_tv_show - Failed to return a tv show or list of tv shows using a query."
+    );
     handleError(err, res, next);
   }
 };
@@ -115,7 +146,13 @@ exports.get_people = async (req, res, next) => {
     const people = response.data.results;
     // return the list of people to the client
     res.status(200).json(people);
+    logger.info(
+      "get_people - Successfully returned a list of popular actors/directors."
+    );
   } catch (err) {
+    logger.error(
+      "get_people - Failed to return a list of popular actors/directors."
+    );
     handleError(err, res, next);
   }
 };
@@ -131,7 +168,13 @@ exports.search_people = async (req, res, next) => {
     const person = response.data.results;
     // return the list of people to the client
     res.status(200).json(person);
+    logger.info(
+      "search_people - Successfully returned a person or list of people using a query."
+    );
   } catch (err) {
+    logger.error(
+      "search_people - Failed to return a person or list of people using a query."
+    );
     handleError(err, res, next);
   }
 };
@@ -145,7 +188,11 @@ exports.get_genres = async (req, res, next) => {
 
     const genres = response.data.genres;
     res.status(200).json(genres);
+    logger.info(
+      "get_genres - Successfully returned a list of genres."
+    );
   } catch (err) {
+    logger.error("get_genres - Failed to return a list of genres");
     handleError(err, res, next);
   }
 };
