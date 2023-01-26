@@ -27,11 +27,18 @@ router.put(
   user_controller.update_password
 );
 
-// POST request to delete a specific user by id
-router.post(
+// DELETE request to delete a specific user by id
+router.delete(
   "/:id/delete",
   passport.authenticate("jwt", { session: false }),
   user_controller.delete_user
+);
+
+// PUT request to make a user an admin
+router.post(
+  "/make_admin",
+  passport.authenticate("jwt", { session: false }),
+  user_controller.make_admin
 );
 
 // POST request to login a user

@@ -167,6 +167,11 @@ exports.delete_user = async (req, res, next) => {
         .status(404)
         .json({ err: `user with id ${req.params.id} not found` });
     }
+
+    // successful - return JSON message
+    res
+      .status(200)
+      .json({ msg: `${user.username} successfully deleted` });
   } catch (err) {
     return next(err);
   }
@@ -219,6 +224,40 @@ exports.update_password = [
 
       // successful - return JSON message
       res.status(200).json({ msg: "Password updated successfully" });
+    } catch (err) {
+      return next(err);
+    }
+  },
+];
+
+exports.make_admin = [
+  // check if user making the request is an admin
+  async (req, res, next) => {
+    try {
+      const currentUser = await User.findById(req.user.id);
+      if (!currentUser.isAdmin) {
+        return res.status(401).json({ err: "Unauthorized" });
+      }
+    } catch (err) {
+      return next(err);
+    }
+    next();
+  },
+  // make the target user an admin
+  async (req, res, next) => {
+    try {
+      // extract the target user's id from the request body
+      const targetUserId = req.body.userId;
+      // find the target user in the database
+      const targetUser = await User.findById(targetUserId);
+      // update the target user's isAdmin field to true
+      targetUser.isAdmin = true;
+      // save the changes to the database
+      targetUser.save();
+      // successful - return JSON message
+      res
+        .status(200)
+        .json({ msg: `${targetUser.username} granted admin status` });
     } catch (err) {
       return next(err);
     }
