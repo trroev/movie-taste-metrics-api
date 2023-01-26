@@ -1,6 +1,6 @@
 const axios = require("axios");
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
-const logger = require("winston");
+const logger = require("../config/logger");
 
 const handleError = (err, res, next) => {
   // check for specific error types and respond accordingly

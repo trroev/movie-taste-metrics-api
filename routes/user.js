@@ -11,7 +11,7 @@ router.post("/signup", user_controller.create_user);
 router.get("/:id", user_controller.get_user);
 
 // GET request to find all users
-router.get("/users", user_controller.get_all_users);
+router.get("/users/all", user_controller.get_all_users);
 
 // PUT request to update a specific user by id
 router.put(
@@ -20,7 +20,7 @@ router.put(
   user_controller.update_user
 );
 
-// PUT reques to update a specific users password
+// PUT request to update a specific users password
 router.put(
   "/:id/update_password",
   passport.authenticate("jwt", { session: false }),
@@ -29,7 +29,7 @@ router.put(
 
 // POST request to delete a specific user by id
 router.post(
-  "/:id",
+  "/:id/delete",
   passport.authenticate("jwt", { session: false }),
   user_controller.delete_user
 );

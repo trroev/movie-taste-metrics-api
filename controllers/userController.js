@@ -2,6 +2,7 @@ const User = require("../models/user");
 const Blacklist = require("../models/blacklist");
 const jwt = require("jsonwebtoken");
 const { check, validationResult } = require("express-validator");
+const logger = require("../config/logger");
 
 // create a user and save it to the database
 exports.create_user = [
@@ -141,14 +142,12 @@ exports.update_user = [
           .json({ err: `user with id ${req.params.id} not found` });
       }
       // successful - return JSON object of the updated user
-      res
-        .status(200)
-        .json(
-          {
-            msg: `User with id ${req.params.id} updated successfully`,
-          },
-          user
-        );
+      res.status(200).json(
+        {
+          msg: `User with id ${req.params.id} updated successfully`,
+        },
+        user
+      );
     } catch (err) {
       return next(err);
     }
@@ -228,27 +227,29 @@ exports.update_password = [
 
 // login
 exports.login = async (req, res, next) => {
-  // extract the username and password from the request body
-  const { username, password } = req.body;
+  try {
+    // extract the username and password from the request body
+    const { username, password } = req.body;
+    // find the user by their username
+    const user = await User.findOne({ username });
+    if (!user)
+      return res.status(401).json({ error: "Invalid username" });
 
-  // find the user by their username
-  const user = await User.findOne({ username });
-  if (!user)
-    return res.status(401).json({ error: "Invalid username" });
+    // compare the provided password with the hashed password stored in the database
+    const isMatch = await user.isValidPassword(password);
+    if (!isMatch)
+      return res.status(401).json({ error: "Invalid password" });
 
-  // compare the provided password with the hashed password stored in the database
-  const isMatch = await user.isValidPassword(password);
-  if (!isMatch)
-    return res.status(401).json({ error: "Invalid password" });
-
-  // create a JSON web token
-  const payload = { userId: user._id };
-  const token = jwt.sign(payload, process.env.SECRET_KEY, {
-    expiresIn: "1d",
-  });
-
-  // return the token to the client
-  res.status(200).json({ msg: "Login successful", token });
+    // create a JSON web token
+    const payload = { userId: user._id };
+    const token = jwt.sign(payload, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    });
+    // return the token to the client
+    res.status(200).json({ msg: "Login successful", token });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 // logout
