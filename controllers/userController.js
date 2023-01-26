@@ -223,7 +223,11 @@ exports.update_password = [
       await user.save();
 
       // successful - return JSON message
-      res.status(200).json({ msg: "Password updated successfully" });
+      res
+        .status(200)
+        .json({
+          msg: `Password for ${user.username} updated successfully`,
+        });
     } catch (err) {
       return next(err);
     }
